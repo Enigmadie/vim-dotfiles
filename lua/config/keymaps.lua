@@ -8,6 +8,7 @@ vim.keymap.del("n", "<leader><leader>")
 vim.keymap.set("n", "<leader><leader>", "<cmd>Neotree toggle<cr>", { desc = "Toggle Neo-tree" })
 
 vim.keymap.set("n", "<leader>e", "<cmd>Telescope find_files<cr>", { desc = "Find Files (Telescope)" })
+vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Show error under cursor" })
 
 -- vim.keymap.del("n", "s")
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save File" })
