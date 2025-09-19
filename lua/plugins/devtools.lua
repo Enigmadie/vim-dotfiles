@@ -36,6 +36,19 @@ return {
                 includeInlayEnumMemberValueHints = true,
               },
             },
+            clojure_lsp = {
+              mason = true,
+              settings = {
+                clojureLsp = {
+                  sourcePaths = { "src", "test" },
+                  format = {
+                    enable = true,
+                    configPath = vim.fn.expand(".clojure-lsp/config.edn"),
+                  },
+                },
+              },
+              filetypes = { "clojure", "clojurescript" },
+            },
           },
         },
       },
@@ -45,11 +58,9 @@ return {
         require("lspconfig").tsserver.setup({
           settings = opts.settings,
           on_attach = function(client, bufnr)
-            -- Отключаем форматирование через tsserver, используем conform.nvim
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
 
-            -- Автоимпорты при сохранении
             vim.api.nvim_create_autocmd("BufWritePre", {
               buffer = bufnr,
               callback = function()
@@ -62,6 +73,9 @@ return {
           end,
         })
         return true
+      end,
+      clojure_lsp = function()
+        require("lspconfig").clojure_lsp.setup({})
       end,
     },
   },
@@ -117,5 +131,18 @@ return {
   {
     "powerman/vim-plugin-ruscmd",
     event = "VeryLazy",
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    optional = true,
+    dependencies = {
+      "PaterJason/cmp-conjure",
+    },
+    opts = function(_, opts)
+      if type(opts.sources) == "table" then
+        table.insert(opts.sources, { name = "conjure" })
+      end
+    end,
   },
 }
