@@ -36,19 +36,20 @@ return {
                 includeInlayEnumMemberValueHints = true,
               },
             },
-            clojure_lsp = {
-              mason = true,
-              settings = {
-                clojureLsp = {
-                  sourcePaths = { "src", "test" },
-                  format = {
-                    enable = true,
-                    configPath = vim.fn.expand(".clojure-lsp/config.edn"),
-                  },
-                },
-              },
-              filetypes = { "clojure", "clojurescript" },
-            },
+            require("lspconfig").clojure_lsp.setup({
+              cmd = { "clojure-lsp" },
+              filetypes = { "clj", "cljs", "cljc" },
+              on_attach = function(client, bufnr)
+                if client.server_capabilities.documentFormattingProvider then
+                  vim.api.nvim_create_autocmd("BufWritePre", {
+                    buffer = bufnr,
+                    callback = function()
+                      vim.lsp.buf.format({ async = false })
+                    end,
+                  })
+                end
+              end,
+            }),
           },
         },
       },
